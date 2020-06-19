@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+}
+
+.main-header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.main-header__nav {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.main-header__item-list {
+  display: flex;
+  flex-flow: row wrap;
+  list-style: none;
+  padding-inline-start: 0;
+  margin: 0;
+}
+
+.main-header__item {
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
+
+.main-header__item > a {
+  color: black;
+}
+
+.main-header__item > a:hover {
+  color: grey;
+}
+
+.main-header__logo {
+  width: 6rem;
+}

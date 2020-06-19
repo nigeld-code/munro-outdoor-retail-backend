@@ -1,0 +1,17 @@
+<%- include('./includes/header.ejs') %> <% if (!isAuthenticated) { %>
+<h1>Munro Outdoor Retail Admin</h1>
+<p>Please enter the password for access:</p>
+<form method="POST" action="/">
+  <input type="password" name="password" id="password" />
+  <button type="submit">Submit</button>
+  <% if (errorMessage) { %>
+  <p style="color: red;"><%= errorMessage %></p>
+  <% } %>
+</form>
+<% } else { %> <%- include('./includes/navigation.ejs') %>
+<h1>Munro Outdoor Retail Admin</h1>
+<p>
+  Welcome to Munro Outdoor Retail Admin. <br />
+  Please select your required action from the navigation above.
+</p>
+<% } %> <%-include('./includes/footer.ejs') %>

@@ -1,12 +1,35 @@
+const path = require('path');
 const express = require('express');
 require('dotenv').config({ path: __dirname + '/.env' });
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
+const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 
 const app = express();
 
 app.use(express.json());
+
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
+app.use(
+  session({
+    secret: process.env.ADMIN_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({
+      url: process.env.DB_API_KEY
+    })
+  })
+)
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  next();
+})
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +41,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(adminRoutes);
 app.use('/auth', authRoutes);
 
 app.use((error, req, res, next) => {
