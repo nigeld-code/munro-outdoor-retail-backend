@@ -29,6 +29,15 @@ include('../includes/navigation.ejs') %> <% if (action === 'add') { %>
 <% } %> <% } else if (action === 'remove') { %>
 <h2>Remove Image</h2>
 <p>Select Images to remove</p>
+<div>
+  <label for="imageType">Image Type:</label>
+  <select id="imageType">
+    <option value="productImages" selected>Product Images</option>
+    <option value="slideshowImages">Slideshow Images</option>
+    <option value="bannerImages">Banner Images</option>
+    <option value="homeTileImages">HomeTile Images</option>
+  </select>
+</div>
 <image-selector id="imageSelector" image-type="productImages"></image-selector>
 <div id="numberimgsSelected">0 images selected</div>
 <br />
@@ -43,6 +52,7 @@ include('../includes/navigation.ejs') %> <% if (action === 'add') { %>
   var imagesInput = document.getElementById('images');
   var numberimgsSelected = document.getElementById('numberimgsSelected');
   var removeSubmitButton = document.getElementById('removeSubmitButton');
+  var imageType = document.getElementById('imageType');
   imageSelector.addEventListener('imgSelect', function() {
     imagesInput.setAttribute('value', imageSelector.selectedImagesArr.join(', '));
     if (numberimgsSelected.hasChildNodes()) {
@@ -57,6 +67,9 @@ include('../includes/navigation.ejs') %> <% if (action === 'add') { %>
       removeSubmitButton.setAttribute('disabled', 'true');
     }
   });
+  imageType.addEventListener('change', function(event) {
+    imageSelector.setAttribute('image-type', event.target.value);
+  })
 </script>
 <% } else if (!action) { %>
 <h2>Add/Remove Image</h2>
