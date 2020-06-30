@@ -1,0 +1,40 @@
+<%- include('../includes/header.ejs') %> 
+</head>
+<body>
+<%-
+include('../includes/navigation.ejs') %> <% if (action === 'add') { %>
+<h2>Add Image</h2>
+<form method="POST" action="/addImage" enctype="multipart/form-data">
+  <div>
+    <label for="imageType">Image Type:</label>
+    <select id="imageType" name="imageType">
+      <option value="productImages" selected>Product Images</option>
+      <option value="slideshowImages">Slideshow Images</option>
+      <option value="bannerImages">Banner Images</option>
+      <option value="homeTileImages">HomeTile Images</option>
+    </select>
+  </div>
+  <div>
+    <label for="images">Images:</label>
+    <input type="file" id="image" name="images" multiple />
+  </div>
+  <button type="submit">Upload</button>
+</form>
+<% if (errorMessage) { %>
+<div style="color: red;"><%= errorMessage %></div>
+<% } %>
+<% if (successMessage) { %>
+<div style="color: green;"><%= successMessage %></div>
+<% } %> <% } else if (action === 'remove') { %>
+<h2>Remove Image</h2>
+<% } else if (!action) { %>
+<h2>Add/Remove Image</h2>
+<form method="POST" action="/image">
+  <input type="hidden" name="action" value="add" />
+  <button type="submit">ADD</button>
+</form>
+<form method="POST" action="/image">
+  <input type="hidden" name="action" value="remove" />
+  <button type="submit">REMOVE</button>
+</form>
+<% } %> <%-include('../includes/footer.ejs') %>

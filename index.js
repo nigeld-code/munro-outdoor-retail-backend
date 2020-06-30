@@ -1,4 +1,5 @@
 const path = require('path');
+
 const express = require('express');
 require('dotenv').config({ path: __dirname + '/.env' });
 const mongoose = require('mongoose');
@@ -7,13 +8,12 @@ const MongoStore = require('connect-mongo')(session);
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
+const productsRoutes = require('./routes/products');
+const imagesRoutes = require('./routes/images');
 
 const app = express();
 
 app.use(express.json());
-
-app.set('view engine', 'ejs');
-app.set('views', 'views');
 
 app.use(
   session({
@@ -24,12 +24,12 @@ app.use(
       url: process.env.DB_API_KEY
     })
   })
-)
+);
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   next();
-})
+});
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -43,11 +43,15 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
 app.use(adminRoutes);
 app.use('/auth', authRoutes);
+app.use('/products', productsRoutes);
+app.use('/images', imagesRoutes);
 
 app.use((error, req, res, next) => {
-  // console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;

@@ -1,4 +1,7 @@
-<%- include('./includes/header.ejs') %> <% if (!isAuthenticated) { %>
+<%- include('./includes/header.ejs') %>
+</head>
+<body>
+<% if (!isAuthenticated) { %>
 <h1>Munro Outdoor Retail Admin</h1>
 <p>Please enter the password for access:</p>
 <form method="POST" action="/">

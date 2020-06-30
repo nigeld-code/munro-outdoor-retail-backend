@@ -1,4 +1,66 @@
-<%- include('../includes/header.ejs') %>
+<%- include('../includes/header.ejs') %> 
+<script src="/js/imageSelector.js" defer></script>
+</head>
+<body>
 <%- include('../includes/navigation.ejs') %>
-<p>Welcome to add-product</p>
+<h2>Add Product</h2>
+<form method="POST" action="/addproduct">
+  <div>
+    <label for="productSku">Product SKU:</label>
+    <input type="text" id="productSku" name="productSku" value="<%= oldInput.oldProductId %>" />
+    <% if (errorMessage) {
+     for (var error of errorMessage) {
+        if (error.param === 'productSku') { %>
+          <div style="color: red;"><%= error.msg %></div>
+      <%  } 
+      } 
+   } %>
+  </div>
+  <div>
+    <label for="productName">Product Name:</label>
+    <input type="text" id="productName" name="productName" value="<%= oldInput.oldProductName %>" />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+         if (error.param === 'productName') { %>
+           <div style="color: red;"><%= error.msg %></div>
+       <%  } 
+       } 
+    } %>
+  </div>
+  <div>
+    <label for="productImages">Images:</label>
+    <span id="numberimgsSelected">0 images selected</span>
+    <input type="hidden" id="productImages" name="productImages"/>
+    <image-selector id="imageSelector" image-type="productImages" start-ids="<%= oldInput.oldProductImages %>"></image-selector>
+  </div>
+  <div>
+    <label for="productIsLive">Product available on store:</label>
+    <input
+      type="checkbox"
+      id="productIsLive"
+      name="productIsLive"
+      value="true"
+      <% if (oldInput.oldProductIsLive) { %>
+        checked
+      <% } %>
+    />
+  </div>
+  <button type="submit">Submit</button>
+</form>
+<script>
+  var imageSelector = document.getElementById('imageSelector');
+  var imagesInput = document.getElementById('productImages');
+  var numberimgsSelected = document.getElementById('numberimgsSelected');
+  imageSelector.addEventListener('imgSelect', function () {
+  imagesInput.setAttribute('value', imageSelector.selectedImagesArr.join(', '));
+  if (numberimgsSelected.hasChildNodes()) {
+    numberimgsSelected.removeChild(numberimgsSelected.childNodes[0]);
+  }
+  numberimgsSelected.appendChild(
+    document.createTextNode(
+      `${imageSelector.selectedImagesArr.length} images selected`
+    )
+  );
+});
+</script>
 <%-include('../includes/footer.ejs') %>

@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const productSchema = new Schema(
   {
+    productSku: {
+      type: String,
+      required: true
+    },
     productName: {
       type: String,
       required: true
@@ -17,8 +21,7 @@ const productSchema = new Schema(
       type: String
     },
     productPrice: {
-      type: Number,
-      required: true
+      type: Number
     },
     breadcrumbs: [
       {
@@ -29,7 +32,10 @@ const productSchema = new Schema(
       {
         type: String
       }
-    ]
+    ],
+    isLive: {
+      type: Boolean
+    }
   },
   { timestamps: true }
 );

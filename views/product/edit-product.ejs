@@ -1,4 +1,109 @@
-<%- include('../includes/header.ejs') %>
+<%- include('../includes/header.ejs') %> 
+<script src="/js/imageSelector.js" defer></script>
+</head>
+<body>
 <%- include('../includes/navigation.ejs') %>
-<p>Welcome to edit-product</p>
-<%-include('../includes/footer.ejs') %>
+<h2>Edit Product</h2>
+<% if (searchProduct) { %>
+<form method="POST" action="/editproduct">
+  <p>Search for a product to edit</p>
+  <div>
+    <label for="productSku">Product Sku:</label>
+    <input type="text" id="productSku" name="productSku" />
+  </div>
+  <button type="submit">Search</button>
+  <% if (errorMessage) { %>
+    <% if (typeof errorMessage === 'string') { %>
+  <p style="color: red;"><%= errorMessage %></p>
+    <% } else { %>
+      <% for (var msg of errorMessage) { %>
+        <p style="color: red;"><%= msg.msg %></p>
+      <% } %>
+    <% } %>
+  <% } %>
+</form>
+<% } else if (product) { %>
+<form method="POST" action="/sendeditproduct">
+  <div>
+    <label for="productSku">Product SKU:</label>
+    <input
+      type="text"
+      id="productSku"
+      name="productSku"
+      value="<%= product.productSku %>"
+    />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+        if (error.param === 'productSku') { %>
+           <div style="color: red;"><%= error.msg %></div> 
+      <% } 
+      }
+    } %>
+  </div>
+  <div>
+    <label for="productName">Product Name:</label>
+    <input
+      type="text"
+      id="productName"
+      name="productName"
+      value="<%= product.productName %>"
+    />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+        if (error.param === 'productName') { %>
+           <div style="color: red;"><%= error.msg %></div> 
+      <% } 
+      }
+    } %>
+  </div>
+  <div>
+    <label for="productImages">Product Images:</label>
+    <span id="numberimgsSelected">0 images selected</span>
+    <input
+      type="hidden"
+      id="productImages"
+      name="productImages"
+    />
+    <image-selector id="imageSelector" image-type="productImages" start-ids="<%= product.productImages %>"></image-selector>
+  </div>
+  <div>
+    <label for="productIsLive">Product available on store:</label>
+    <% if (product.isLive) { %>
+    <input
+      type="checkbox"
+      id="productIsLive"
+      name="productIsLive"
+      value="true"
+      checked
+    />
+    <% } else { %>
+    <input
+      type="checkbox"
+      id="productIsLive"
+      name="productIsLive"
+      value="true"
+    />
+    <% } %>
+  </div>
+  <input type="hidden" name="productId" value="<%= product.id %>" />
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  var imageSelector = document.getElementById('imageSelector');
+  var imagesInput = document.getElementById('productImages');
+  var numberimgsSelected = document.getElementById('numberimgsSelected');
+  imageSelector.addEventListener('imgSelect', function() {
+    imagesInput.setAttribute('value', imageSelector.selectedImagesArr.join(', '));
+    if (numberimgsSelected.hasChildNodes()) {
+      numberimgsSelected.removeChild(numberimgsSelected.childNodes[0]);
+    }
+    numberimgsSelected.appendChild(
+      document.createTextNode(
+        `${imageSelector.selectedImagesArr.length} images selected`
+        )
+        )
+      })
+    </script>
+      <% } %>
+ <%-include('../includes/footer.ejs') %>
