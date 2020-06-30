@@ -197,6 +197,45 @@ router.post(
 
 router.get('/removeproduct', adminAuthCheck, adminController.getRemoveProduct);
 
+router.post(
+  '/removeproduct',
+  adminAuthCheck,
+  express.urlencoded({ extended: true }),
+  [
+    body('productSku')
+      .trim()
+      .notEmpty()
+      .withMessage('Please Enter a Product Sku')
+      .isNumeric()
+      .withMessage('Product Sku must be numeric')
+      .isLength({ min: 5, max: 5 })
+      .withMessage('Product Sku must have 5 characters length')
+  ],
+  adminController.postRemoveProduct
+);
+
+router.post(
+  '/sendremoveproduct',
+  adminAuthCheck,
+  express.urlencoded({ extended: true }),
+  [
+    body('removeConfirm')
+      .equals('Remove')
+      .withMessage(
+        'Product not removed, correct input required to confirm removing the product from the DB'
+      ),
+    body('productSku')
+      .notEmpty()
+      .withMessage('Remove Product requires a product ID')
+      .custom(value => {
+        if (!mongoose.Types.ObjectId.isValid(value)) {
+          return Promise.reject('Remove Product only accepts valid IDs');
+        }
+      })
+  ],
+  adminController.postSendRemoveProduct
+);
+
 router.get('/image', adminAuthCheck, adminController.getImage);
 
 router.post(

@@ -2,5 +2,40 @@
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
-<p>Welcome to remove-product</p>
+<h2>Remove Product</h2>
+<% if (searchProduct) { %>
+<form method="POST" action="/removeproduct">
+  <p>Search for a product to remove</p>
+  <div>
+    <label for="productSku">Product Sku:</label>
+    <input type="text" id="productSku" name="productSku" />
+    <% if (errorMessage) { %>
+      <div style="color: red;"><%= errorMessage %></div>
+    <% } %>
+  </div>
+  <button type="submit">Search</button>
+</form>
+<% } else { %>
+  <div>
+    <p>Product Sku: <%= product.productSku %></p>
+    <p>Product Name: <%= product.productName %></p>
+    <% if (product.productImages) { %>
+      <p>Product Images:</p>
+      <% for (var image of product.productImages) { %>
+        <img src="/images/_/<%= image %>" alt="<%= image %>" />
+      <% } %>
+    <% } %>
+    <p>Live on Store: 
+      <span style="font-weight: bold; text-decoration: underline; text-transform: capitalize;">
+        <%= product.isLive %>
+      </span>
+    </p>
+  </div>
+  <form method="POST" action="/sendremoveproduct">
+    <p>Are you sure you want to remove this product from the Database? (this action cannot be undone)</p>
+    <input type="text" name="removeConfirm" placeholder="Enter 'Remove' to confirm"/>
+    <input type="hidden" name="productId" value="<%= product.id %>" />
+    <button type="submit">Remove</button>
+  </form>
+<% } %>
 <%-include('../includes/footer.ejs') %>

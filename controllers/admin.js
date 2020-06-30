@@ -231,7 +231,64 @@ exports.postSendEditProduct = (req, res, next) => {
 };
 
 exports.getRemoveProduct = (req, res, next) => {
-  res.render('product/remove-product');
+  res.render('product/remove-product', {
+    searchProduct: true,
+    errorMessage: null,
+    product: null
+  });
+};
+
+exports.postRemoveProduct = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(401).render('product/remove-product', {
+      searchProduct: true,
+      errorMessage: errors.array()[0].msg,
+      product: null
+    });
+  }
+  const productSku = req.body.productSku;
+  Product.findOne({ productSku }).then(product => {
+    if (!product) {
+      return res.status(401).render('product/remove-product', {
+        searchProduct: true,
+        errorMessage: 'Product Sku not found in DB',
+        product: null
+      });
+    }
+    res.status(200).render('product/remove-product', {
+      searchProduct: false,
+      errorMessage: null,
+      product
+    });
+  });
+};
+
+exports.postSendRemoveProduct = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(401).render('product/remove-product', {
+      searchProduct: true,
+      errorMessage: errors.array()[0].msg,
+      product: null
+    });
+  }
+  const productId = req.body.productId;
+  Product.findByIdAndRemove(productId)
+    .then(result => {
+      if (!result) {
+        res.status(400).render('product/remove-product', {
+          searchProduct: true,
+          errorMessage: 'Error: failed to remove Product from DB',
+          product: null
+        });
+      }
+      res.status(200).redirect('/');
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).redirect('/');
+    });
 };
 
 exports.getImage = (req, res, next) => {
