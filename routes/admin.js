@@ -254,4 +254,35 @@ router.post(
   adminController.postAddImage
 );
 
+router.post(
+  '/removeimage',
+  adminAuthCheck,
+  express.urlencoded({ extended: true }),
+  [
+    body('removeConfirm')
+      .equals('Remove')
+      .withMessage(
+        'Image not removed, correct input required to confirm removing the image from the DB'
+      ),
+    body('images')
+      .trim()
+      .notEmpty()
+      .withMessage('No Images selected to be removed')
+      .custom(value => {
+        let hasErrors = false;
+        value.split(', ').forEach(id => {
+          if (!mongoose.Types.ObjectId.isValid(id)) {
+            hasErrors = true;
+          }
+        });
+        if (hasErrors) {
+          return Promise.reject('Removing images only accepts valid IDs');
+        } else {
+          return Promise.resolve();
+        }
+      })
+  ],
+  adminController.postRemoveImage
+);
+
 module.exports = router;

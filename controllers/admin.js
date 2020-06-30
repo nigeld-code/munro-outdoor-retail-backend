@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config({ path: __dirname + '../.env' });
 const { validationResult } = require('express-validator');
 
@@ -293,7 +295,9 @@ exports.postSendRemoveProduct = (req, res, next) => {
 
 exports.getImage = (req, res, next) => {
   res.render('image/image', {
-    action: null
+    action: null,
+    errorMessage: null,
+    successMessage: null
   });
 };
 
@@ -344,4 +348,45 @@ exports.postAddImage = async (req, res, next) => {
       ? `${imageUploadSuccess} successfully uploaded to Server`
       : null
   });
+};
+
+exports.postRemoveImage = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return res.status(401).render('image/image', {
+      action: null,
+      errorMessage: errors.array()[0].msg,
+      successMessage: null
+    });
+  }
+  const images = req.body.images.split(', ');
+  await Promise.all(
+    images.map(async imageId => {
+      try {
+        const imageObj = await Image.findByIdAndRemove(imageId);
+        for (let [key, value] of Object.entries(imageObj._doc)) {
+          if (key.endsWith('Url') && value) {
+            const imgPath = path.join(__dirname, '../images', value);
+            await fs.access(imgPath, fs.F_OK, async (err) => {
+              if (err) throw err;
+              await fs.unlink(imgPath, (err) => {
+                if (err) throw err;
+                console.log(`${value} was deleted from Server`);
+              })
+            })
+          }
+        }  
+      } catch (error) {
+        console.log(error);
+        res.status(500).redirect('/');
+      }
+    })
+  ).then(() => {
+    res.status(200).render('image/image', {
+      action: null,
+      errorMessage: null,
+      successMessage: null
+    })
+  })
 };

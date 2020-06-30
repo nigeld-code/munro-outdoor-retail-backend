@@ -32,7 +32,7 @@
     </p>
   </div>
   <form method="POST" action="/sendremoveproduct">
-    <p>Are you sure you want to remove this product from the Database? (this action cannot be undone)</p>
+    <p style="color: red; font-weight: bold; text-decoration: underline;">Are you sure you want to remove this product from the Database? (this action cannot be undone)</p>
     <input type="text" name="removeConfirm" placeholder="Enter 'Remove' to confirm"/>
     <input type="hidden" name="productId" value="<%= product.id %>" />
     <button type="submit">Remove</button>

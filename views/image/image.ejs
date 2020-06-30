@@ -1,4 +1,5 @@
 <%- include('../includes/header.ejs') %> 
+<script src="/js/imageSelector.js" defer></script>
 </head>
 <body>
 <%-
@@ -27,6 +28,36 @@ include('../includes/navigation.ejs') %> <% if (action === 'add') { %>
 <div style="color: green;"><%= successMessage %></div>
 <% } %> <% } else if (action === 'remove') { %>
 <h2>Remove Image</h2>
+<p>Select Images to remove</p>
+<image-selector id="imageSelector" image-type="productImages"></image-selector>
+<div id="numberimgsSelected">0 images selected</div>
+<br />
+<form method="POST" action="/removeimage">
+  <p style="color: red; font-weight: bold; text-decoration: underline;">Are you sure you want to remove these images from the Database? (this action cannot be undone)</p>
+  <input type="hidden" id="images" name="images"/>
+  <input type="text" name="removeConfirm" placeholder="Enter 'Remove' to confirm" />
+  <button id="removeSubmitButton" type="submit" disabled>Remove</button>
+</form>
+<script>
+  var imageSelector = document.getElementById('imageSelector');
+  var imagesInput = document.getElementById('images');
+  var numberimgsSelected = document.getElementById('numberimgsSelected');
+  var removeSubmitButton = document.getElementById('removeSubmitButton');
+  imageSelector.addEventListener('imgSelect', function() {
+    imagesInput.setAttribute('value', imageSelector.selectedImagesArr.join(', '));
+    if (numberimgsSelected.hasChildNodes()) {
+      numberimgsSelected.removeChild(numberimgsSelected.childNodes[0]);
+    }
+    numberimgsSelected.appendChild(document.createTextNode(
+      `${imageSelector.selectedImagesArr.length} images Selected`
+    ));
+    if (imageSelector.selectedImagesArr.length) {
+      removeSubmitButton.removeAttribute('disabled');
+    } else {
+      removeSubmitButton.setAttribute('disabled', 'true');
+    }
+  });
+</script>
 <% } else if (!action) { %>
 <h2>Add/Remove Image</h2>
 <form method="POST" action="/image">
@@ -37,4 +68,7 @@ include('../includes/navigation.ejs') %> <% if (action === 'add') { %>
   <input type="hidden" name="action" value="remove" />
   <button type="submit">REMOVE</button>
 </form>
+<% if (errorMessage) { %>
+  <div style="color: red;"><%= errorMessage %></div>
+<% } %>
 <% } %> <%-include('../includes/footer.ejs') %>
