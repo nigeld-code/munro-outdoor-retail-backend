@@ -91,6 +91,7 @@ exports.postAddProduct = (req, res, next) => {
   const productSku = req.body.productSku;
   const productBrand = req.body.productBrand;
   const productName = req.body.productName;
+  const breadcrumbs = req.body.breadcrumbs.split(',');
   const productPrice = +req.body.productPrice;
   let productImages = req.body.productImages.split(', ');
   if (productImages[0] === '') {
@@ -102,6 +103,7 @@ exports.postAddProduct = (req, res, next) => {
     productSku,
     productBrand,
     productName,
+    breadcrumbs,
     productPrice,
     productImages: productImages,
     isLive
@@ -200,6 +202,7 @@ exports.postSendEditProduct = (req, res, next) => {
       productSku: req.body.productSku,
       productBrand: req.body.productBrand,
       productName: req.body.productName,
+      breadcrumbs: req.body.breadcrumbs.split(','),
       productPrice: req.body.productPrice,
       productImages: req.body.productImages,
       isLive: req.body.productIsLive
@@ -216,6 +219,7 @@ exports.postSendEditProduct = (req, res, next) => {
         product.productSku = editedProduct.productSku;
         product.productBrand = editedProduct.productBrand;
         product.productName = editedProduct.productName;
+        product.breadcrumbs = editedProduct.breadcrumbs;
         product.productPrice = +editedProduct.productPrice;
         if (editedProduct.productImages === '') {
           product.productImages = null;
@@ -418,12 +422,12 @@ exports.postBreadcrumb = (req, res, next) => {
     });
   }
   const breadcrumbTitle = req.body.title;
-  const breadcrumbParent = req.body.finalParent;
+  let breadcrumbParent = req.body.finalParent;
+  if (breadcrumbParent === '_') breadcrumbParent = null;
   const newBreadcrumb = new Breadcrumb({
     title: breadcrumbTitle,
     parent: breadcrumbParent
   });
-  console.log(newBreadcrumb);
   newBreadcrumb
     .save()
     .then(result => {

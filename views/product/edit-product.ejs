@@ -1,5 +1,6 @@
 <%- include('../includes/header.ejs') %> 
 <script src="/js/imageSelector.js" defer></script>
+<% if (product) { %><script src="/js/editProductBreadcrumb.js" defer></script><% } %>
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
@@ -73,7 +74,14 @@
     } %>
   </div>
   <div>
-    <label for="productPrice">Product Price:</label>
+    <label for="breadcrumbs">Breadcrumbs:</label>
+    <span id="breadcrumbSelector"></span> 
+    <button type="button" id="addToBreadcrumbs">></button>
+    <input type="hidden" id="initialBreadcrumbs" value="<%= product.breadcrumbs.join(',') %>" />
+    <input type="hidden" id="breadcrumbs" name="breadcrumbs" />
+  </div>
+  <div>
+    <label for="productPrice">Product Price (£):</label>
     <input
       type="text"
       id="productPrice"

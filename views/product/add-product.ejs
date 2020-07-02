@@ -1,5 +1,6 @@
 <%- include('../includes/header.ejs') %> 
 <script src="/js/imageSelector.js" defer></script>
+<script src="/js/addProductBreadcrumb.js" defer></script>
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
@@ -39,7 +40,13 @@
     } %>
   </div>
   <div>
-    <label for="productPrice">Product Name (£):</label>
+    <label for="breadcrumbs">Breadcrumbs:</label>
+    <span id="breadcrumbSelector"></span> 
+    <button type="button" id="addToBreadcrumbs">></button>
+    <input type="hidden" id="breadcrumbs" name="breadcrumbs" />
+  </div>
+  <div>
+    <label for="productPrice">Product Price (£):</label>
     <input type="text" id="productPrice" name="productPrice" value="<%= oldInput.oldProductPrice %>" />
     <% if (errorMessage) {
       for (var error of errorMessage) {

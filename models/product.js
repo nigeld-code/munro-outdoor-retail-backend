@@ -29,19 +29,8 @@ const productSchema = new Schema(
     },
     breadcrumbs: [
       {
-        title: {
-          type: String,
-          required: true
-        },
-        tier: {
-          type: Number,
-          required: true
-        }
-      }
-    ],
-    features: [
-      {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'Breadcrumb'
       }
     ],
     tags: [

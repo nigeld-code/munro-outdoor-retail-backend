@@ -3,6 +3,7 @@ const Product = require('../models/product');
 exports.getProduct = (req, res, next) => {
   let sku = req.params.sku;
   Product.findOne({ productSku: sku })
+    .populate('breadcrumbs')
     .then(product => {
       res.status(200).json({
         product
