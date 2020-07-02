@@ -41,6 +41,22 @@
     } %>
   </div>
   <div>
+    <label for="productBrand">Product Brand:</label>
+    <input
+      type="text"
+      id="productBrand"
+      name="productBrand"
+      value="<%= product.productBrand %>"
+    />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+        if (error.param === 'productBrand') { %>
+           <div style="color: red;"><%= error.msg %></div> 
+      <% } 
+      }
+    } %>
+  </div>
+  <div>
     <label for="productName">Product Name:</label>
     <input
       type="text"
@@ -57,6 +73,22 @@
     } %>
   </div>
   <div>
+    <label for="productPrice">Product Price:</label>
+    <input
+      type="text"
+      id="productPrice"
+      name="productPrice"
+      value="<%= product.productPrice %>"
+    />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+        if (error.param === 'productPrice') { %>
+           <div style="color: red;"><%= error.msg %></div> 
+      <% } 
+      }
+    } %>
+  </div>
+  <div>
     <label for="productImages">Product Images:</label>
     <span id="numberimgsSelected">0 images selected</span>
     <input
@@ -64,7 +96,7 @@
       id="productImages"
       name="productImages"
     />
-    <image-selector id="imageSelector" image-type="productImages" start-ids="<%= product.productImages %>"></image-selector>
+    <image-selector id="imageSelector" image-type="productImages" <% if (product.productImages) { %>start-ids="<%= product.productImages.join(', ') %>"<% } %>></image-selector>
   </div>
   <div>
     <label for="productIsLive">Product available on store:</label>

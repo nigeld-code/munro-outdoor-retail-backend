@@ -54,7 +54,17 @@ router.post(
     body('productName')
       .trim()
       .notEmpty()
-      .withMessage('Please Enter a Product Name'),
+      .withMessage('Please enter a Product Name'),
+    body('productBrand')
+      .trim()
+      .notEmpty()
+      .withMessage('Please enter a Product Brand'),
+    body('productPrice')
+      .trim()
+      .notEmpty()
+      .withMessage('Please enter a Product Price')
+      .isNumeric()
+      .withMessage('Product Price must be a number'),
     body('productImages')
       .trim()
       .custom(value => {
@@ -145,10 +155,20 @@ router.post(
           }
         });
       }),
+    body('productBrand')
+      .trim()
+      .notEmpty()
+      .withMessage('Please enter a Product Brand'),
     body('productName')
       .trim()
       .notEmpty()
-      .withMessage('Please Enter a Product Name'),
+      .withMessage('Please enter a Product Name'),
+    body('productPrice')
+      .trim()
+      .notEmpty()
+      .withMessage('Please enter a Product Price')
+      .isNumeric()
+      .withMessage('Product Price must be a number'),
     body('productImages')
       .trim()
       .custom(value => {
@@ -224,14 +244,9 @@ router.post(
       .withMessage(
         'Product not removed, correct input required to confirm removing the product from the DB'
       ),
-    body('productSku')
+    body('productId')
       .notEmpty()
       .withMessage('Remove Product requires a product ID')
-      .custom(value => {
-        if (!mongoose.Types.ObjectId.isValid(value)) {
-          return Promise.reject('Remove Product only accepts valid IDs');
-        }
-      })
   ],
   adminController.postSendRemoveProduct
 );
@@ -283,6 +298,24 @@ router.post(
       })
   ],
   adminController.postRemoveImage
+);
+
+router.get('/breadcrumbs', adminAuthCheck, adminController.getBreadcrumb);
+
+router.post(
+  '/breadcrumbs',
+  adminAuthCheck,
+  express.urlencoded({ extended: true }),
+  [
+    body('title').trim().notEmpty().withMessage('Please enter a Title')
+  ],
+  adminController.postBreadcrumb
+);
+
+router.get(
+  '/breadcrumbOptions/:parent',
+  adminAuthCheck,
+  adminController.getBreadcrumbOptions
 );
 
 module.exports = router;

@@ -18,7 +18,9 @@
 <% } else { %>
   <div>
     <p>Product Sku: <%= product.productSku %></p>
+    <p>Product Brand: <%= product.productBrand %></p>
     <p>Product Name: <%= product.productName %></p>
+    <p>Product Price: £<%= product.productPrice %></p>
     <% if (product.productImages) { %>
       <p>Product Images:</p>
       <% for (var image of product.productImages) { %>

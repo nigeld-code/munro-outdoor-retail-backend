@@ -7,6 +7,10 @@ const productSchema = new Schema(
       type: String,
       required: true
     },
+    productBrand: {
+      type: String,
+      required: true
+    },
     productName: {
       type: String,
       required: true
@@ -24,6 +28,18 @@ const productSchema = new Schema(
       type: Number
     },
     breadcrumbs: [
+      {
+        title: {
+          type: String,
+          required: true
+        },
+        tier: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
+    features: [
       {
         type: String
       }

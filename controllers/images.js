@@ -8,9 +8,7 @@ exports.getImageId = (req, res, next) => {
   Image.findById(imageId)
     .then(image => {
       if (!image) {
-        const error = new Error('Failed to find image in DB');
-        error.statusCode = 404;
-        throw error;
+        return res.status(404).sendFile(path.join(__dirname, '../images/c5babc63-0438-415b-9772-43cb5906b2f3.jpeg'))
       }
       if (imageSize !== '_') {
         res

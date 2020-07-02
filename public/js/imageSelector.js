@@ -92,7 +92,7 @@ class ImageSelector extends HTMLElement {
       this._updatePageNumber.bind(this, 'last')
     );
     if (this.hasAttribute('start-ids') && this.getAttribute('start-ids').length) {
-      var startIds = this.getAttribute('start-ids').split(',');
+      var startIds = this.getAttribute('start-ids').split(', ');
       for (var id of startIds) {
         this.selectedImages.push(id);
       }

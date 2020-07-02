@@ -5,6 +5,8 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 const Image = require('../models/image');
+const Breadcrumb = require('../models/breadcrumb');
+const { response } = require('express');
 
 exports.getIndex = (req, res, next) => {
   res.render('index', {
@@ -78,14 +80,18 @@ exports.postAddProduct = (req, res, next) => {
       errorMessage: errors.array(),
       oldInput: {
         oldProductId: req.body.productSku || '',
+        oldProductBrand: req.body.productBrand || '',
         oldProductName: req.body.productName || '',
+        oldProductPrice: req.body.productPrice || '',
         oldProductImages: req.body.productImages,
         oldProductIsLive: req.body.productIsLive || false
       }
     });
   }
   const productSku = req.body.productSku;
+  const productBrand = req.body.productBrand;
   const productName = req.body.productName;
+  const productPrice = +req.body.productPrice;
   let productImages = req.body.productImages.split(', ');
   if (productImages[0] === '') {
     productImages = null;
@@ -94,7 +100,9 @@ exports.postAddProduct = (req, res, next) => {
   if (!isLive) isLive = false;
   const newProduct = new Product({
     productSku,
+    productBrand,
     productName,
+    productPrice,
     productImages: productImages,
     isLive
   });
@@ -190,7 +198,9 @@ exports.postSendEditProduct = (req, res, next) => {
     const productId = req.body.productId;
     const editedProduct = {
       productSku: req.body.productSku,
+      productBrand: req.body.productBrand,
       productName: req.body.productName,
+      productPrice: req.body.productPrice,
       productImages: req.body.productImages,
       isLive: req.body.productIsLive
     };
@@ -204,7 +214,9 @@ exports.postSendEditProduct = (req, res, next) => {
           });
         }
         product.productSku = editedProduct.productSku;
+        product.productBrand = editedProduct.productBrand;
         product.productName = editedProduct.productName;
+        product.productPrice = +editedProduct.productPrice;
         if (editedProduct.productImages === '') {
           product.productImages = null;
         } else {
@@ -269,6 +281,7 @@ exports.postRemoveProduct = (req, res, next) => {
 exports.postSendRemoveProduct = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors);
     return res.status(401).render('product/remove-product', {
       searchProduct: true,
       errorMessage: errors.array()[0].msg,
@@ -368,15 +381,15 @@ exports.postRemoveImage = async (req, res, next) => {
         for (let [key, value] of Object.entries(imageObj._doc)) {
           if (key.endsWith('Url') && value) {
             const imgPath = path.join(__dirname, '../images', value);
-            await fs.access(imgPath, fs.F_OK, async (err) => {
+            await fs.access(imgPath, fs.F_OK, async err => {
               if (err) throw err;
-              await fs.unlink(imgPath, (err) => {
+              await fs.unlink(imgPath, err => {
                 if (err) throw err;
                 console.log(`${value} was deleted from Server`);
-              })
-            })
+              });
+            });
           }
-        }  
+        }
       } catch (error) {
         console.log(error);
         res.status(500).redirect('/');
@@ -387,6 +400,84 @@ exports.postRemoveImage = async (req, res, next) => {
       action: null,
       errorMessage: null,
       successMessage: null
+    });
+  });
+};
+
+exports.getBreadcrumb = (req, res, next) => {
+  res.render('breadcrumb/breadcrumb', {
+    errorMessage: null
+  });
+};
+
+exports.postBreadcrumb = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(401).render('breadcrumb/breadcrumb', {
+      errorMessage: errors.array()[0].msg
+    });
+  }
+  const breadcrumbTitle = req.body.title;
+  const breadcrumbParent = req.body.finalParent;
+  const newBreadcrumb = new Breadcrumb({
+    title: breadcrumbTitle,
+    parent: breadcrumbParent
+  });
+  console.log(newBreadcrumb);
+  newBreadcrumb
+    .save()
+    .then(result => {
+      if (!result) {
+        return;
+      }
+      if (breadcrumbParent) {
+        return Breadcrumb.findByIdAndUpdate(breadcrumbParent, {
+          $push: { children: result._id }
+        });
+      }
+      return;
     })
-  })
+    .then(() => {
+      res.status(200).render('breadcrumb/breadcrumb', {
+        errorMessage: null
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).redirect('/');
+    });
+};
+
+exports.getBreadcrumbOptions = (req, res, next) => {
+  const parent = req.params.parent;
+  if (parent === '_') {
+    Breadcrumb.find({ parent: null })
+      .then(options => {
+        return res.status(200).json({
+          options
+        });
+      })
+      .catch(err => {
+        res.status(500).redirect('/');
+      });
+  } else {
+    Breadcrumb.findById(parent)
+      .populate('children')
+      .then(breadcrumb => {
+        if (!breadcrumb) {
+          return res.status(401).redirect('/');
+        }
+        if (breadcrumb.children.length) {
+          return res.status(200).json({
+            options: breadcrumb.children
+          });
+        }
+        return res.status(200).json({
+          options: null
+        });
+      })
+      .catch(err => {
+        res.status(500).redirect('/');
+      });
+  }
 };

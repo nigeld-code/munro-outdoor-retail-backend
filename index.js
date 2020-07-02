@@ -8,6 +8,7 @@ const MongoStore = require('connect-mongo')(session);
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
+const productRoutes = require('./routes/product');
 const productsRoutes = require('./routes/products');
 const imagesRoutes = require('./routes/images');
 
@@ -48,6 +49,7 @@ app.set('views', 'views');
 
 app.use(adminRoutes);
 app.use('/auth', authRoutes);
+app.use('/product', productRoutes);
 app.use('/products', productsRoutes);
 app.use('/images', imagesRoutes);
 

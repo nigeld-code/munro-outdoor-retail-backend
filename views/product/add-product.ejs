@@ -17,11 +17,33 @@
    } %>
   </div>
   <div>
+    <label for="productBrand">Product Brand:</label>
+    <input type="text" id="productBrand" name="productBrand" value="<%= oldInput.oldProductBrand %>" />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+         if (error.param === 'productBrand') { %>
+           <div style="color: red;"><%= error.msg %></div>
+       <%  } 
+       } 
+    } %>
+  </div>
+  <div>
     <label for="productName">Product Name:</label>
     <input type="text" id="productName" name="productName" value="<%= oldInput.oldProductName %>" />
     <% if (errorMessage) {
       for (var error of errorMessage) {
          if (error.param === 'productName') { %>
+           <div style="color: red;"><%= error.msg %></div>
+       <%  } 
+       } 
+    } %>
+  </div>
+  <div>
+    <label for="productPrice">Product Name (£):</label>
+    <input type="text" id="productPrice" name="productPrice" value="<%= oldInput.oldProductPrice %>" />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+         if (error.param === 'productPrice') { %>
            <div style="color: red;"><%= error.msg %></div>
        <%  } 
        } 
