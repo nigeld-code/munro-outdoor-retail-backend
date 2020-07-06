@@ -27,6 +27,11 @@ const productSchema = new Schema(
     productPrice: {
       type: Number
     },
+    productSizes: [
+      {
+        type: String
+      }
+    ],
     breadcrumbs: [
       {
         type: Schema.Types.ObjectId,
