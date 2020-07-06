@@ -1,6 +1,6 @@
 <%- include('../includes/header.ejs') %> 
 <script src="/js/imageSelector.js" defer></script>
-<script src="/js/addProductBreadcrumb.js" defer></script>
+<script src="/js/breadcrumbs.js" defer></script>
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
@@ -33,17 +33,27 @@
     <input type="text" id="productName" name="productName" value="<%= oldInput.oldProductName %>" />
     <% if (errorMessage) {
       for (var error of errorMessage) {
-         if (error.param === 'productName') { %>
-           <div style="color: red;"><%= error.msg %></div>
-       <%  } 
-       } 
-    } %>
-  </div>
+        if (error.param === 'productName') { %>
+          <div style="color: red;"><%= error.msg %></div>
+          <%  } 
+        } 
+      } %>
+    </div>
+    <div style="display: flex;">
+      <label for="productDescription">Product Description:</label>
+      <textarea id="productDescription" name="productDescription"><%= oldInput.oldProductDescription %></textarea>
+      <% if (errorMessage) {
+        for (var error of errorMessage) {
+            if (error.param === 'productDescription') { %>
+              <div style="color: red;"><%= error.msg %></div>
+          <%  } 
+          } 
+      } %>
+    </div>
   <div>
     <label for="breadcrumbs">Breadcrumbs:</label>
-    <span id="breadcrumbSelector"></span> 
-    <button type="button" id="addToBreadcrumbs">></button>
-    <input type="hidden" id="breadcrumbs" name="breadcrumbs" />
+    <breadcrumbs-selector id="breadcrumbSelector" initial-breadcrumbs="<%= oldInput.oldBreadcrumbs %>"></breadcrumbs-selector>
+    <input type="hidden" id="breadcrumbInput" name="breadcrumbs" />
   </div>
   <div>
     <label for="productPrice">Product Price (£):</label>
@@ -82,14 +92,19 @@
   var numberimgsSelected = document.getElementById('numberimgsSelected');
   imageSelector.addEventListener('imgSelect', function () {
   imagesInput.setAttribute('value', imageSelector.selectedImagesArr.join(', '));
-  if (numberimgsSelected.hasChildNodes()) {
-    numberimgsSelected.removeChild(numberimgsSelected.childNodes[0]);
-  }
-  numberimgsSelected.appendChild(
-    document.createTextNode(
-      `${imageSelector.selectedImagesArr.length} images selected`
-    )
-  );
-});
+    if (numberimgsSelected.hasChildNodes()) {
+      numberimgsSelected.removeChild(numberimgsSelected.childNodes[0]);
+    }
+    numberimgsSelected.appendChild(
+      document.createTextNode(
+        `${imageSelector.selectedImagesArr.length} images selected`
+      )
+    );
+  });
+  var breadcrumbSelector = document.getElementById('breadcrumbSelector');
+  var breadcrumbInput = document.getElementById('breadcrumbInput');
+  breadcrumbSelector.addEventListener('updateInput', function() {
+    breadcrumbInput.value = breadcrumbSelector.breadcrumbsValue;
+  })
 </script>
 <%-include('../includes/footer.ejs') %>

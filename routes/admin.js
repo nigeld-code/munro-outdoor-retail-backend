@@ -55,6 +55,7 @@ router.post(
       .trim()
       .notEmpty()
       .withMessage('Please enter a Product Name'),
+    body('productDescription').trim(),
     body('productBrand')
       .trim()
       .notEmpty()
@@ -163,6 +164,7 @@ router.post(
       .trim()
       .notEmpty()
       .withMessage('Please enter a Product Name'),
+    body('productDescription').trim(),
     body('productPrice')
       .trim()
       .notEmpty()
@@ -306,9 +308,7 @@ router.post(
   '/breadcrumbs',
   adminAuthCheck,
   express.urlencoded({ extended: true }),
-  [
-    body('title').trim().notEmpty().withMessage('Please enter a Title')
-  ],
+  [body('title').trim().notEmpty().withMessage('Please enter a Title')],
   adminController.postBreadcrumb
 );
 

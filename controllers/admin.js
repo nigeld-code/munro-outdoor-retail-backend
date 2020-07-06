@@ -82,6 +82,8 @@ exports.postAddProduct = (req, res, next) => {
         oldProductId: req.body.productSku || '',
         oldProductBrand: req.body.productBrand || '',
         oldProductName: req.body.productName || '',
+        oldBreadcrumbs: req.body.breadcrumbs || '',
+        oldProductDescription: req.body.productDescription || '',
         oldProductPrice: req.body.productPrice || '',
         oldProductImages: req.body.productImages,
         oldProductIsLive: req.body.productIsLive || false
@@ -91,6 +93,7 @@ exports.postAddProduct = (req, res, next) => {
   const productSku = req.body.productSku;
   const productBrand = req.body.productBrand;
   const productName = req.body.productName;
+  const productDescription = req.body.productDescription;
   const breadcrumbs = req.body.breadcrumbs.split(',');
   const productPrice = +req.body.productPrice;
   let productImages = req.body.productImages.split(', ');
@@ -103,6 +106,7 @@ exports.postAddProduct = (req, res, next) => {
     productSku,
     productBrand,
     productName,
+    productDescription,
     breadcrumbs,
     productPrice,
     productImages: productImages,
@@ -202,6 +206,7 @@ exports.postSendEditProduct = (req, res, next) => {
       productSku: req.body.productSku,
       productBrand: req.body.productBrand,
       productName: req.body.productName,
+      productDescription: req.body.productDescription,
       breadcrumbs: req.body.breadcrumbs.split(','),
       productPrice: req.body.productPrice,
       productImages: req.body.productImages,
@@ -219,6 +224,7 @@ exports.postSendEditProduct = (req, res, next) => {
         product.productSku = editedProduct.productSku;
         product.productBrand = editedProduct.productBrand;
         product.productName = editedProduct.productName;
+        product.productDescription = editedProduct.productDescription;
         product.breadcrumbs = editedProduct.breadcrumbs;
         product.productPrice = +editedProduct.productPrice;
         if (editedProduct.productImages === '') {

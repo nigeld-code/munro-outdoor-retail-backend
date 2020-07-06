@@ -1,6 +1,6 @@
 <%- include('../includes/header.ejs') %> 
 <script src="/js/imageSelector.js" defer></script>
-<% if (product) { %><script src="/js/editProductBreadcrumb.js" defer></script><% } %>
+<% if (product) { %><script src="/js/breadcrumbs.js" defer></script><% } %>
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
@@ -73,12 +73,21 @@
       }
     } %>
   </div>
+  <div style="display: flex;">
+    <label for="productDescription">Product Description:</label>
+    <textarea id="productDescription" name="productDescription"><%= product.productDescription %></textarea>
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+          if (error.param === 'productDescription') { %>
+            <div style="color: red;"><%= error.msg %></div>
+        <%  } 
+        } 
+    } %>
+  </div>
   <div>
     <label for="breadcrumbs">Breadcrumbs:</label>
-    <span id="breadcrumbSelector"></span> 
-    <button type="button" id="addToBreadcrumbs">></button>
-    <input type="hidden" id="initialBreadcrumbs" value="<%= product.breadcrumbs.join(',') %>" />
-    <input type="hidden" id="breadcrumbs" name="breadcrumbs" />
+    <breadcrumbs-selector id="breadcrumbSelector" initial-breadcrumbs="<%= product.breadcrumbs.join(',') %>"></breadcrumbs-selector>
+    <input type="hidden" id="breadcrumbInput" name="breadcrumbs" />
   </div>
   <div>
     <label for="productPrice">Product Price (£):</label>
@@ -141,9 +150,14 @@
     numberimgsSelected.appendChild(
       document.createTextNode(
         `${imageSelector.selectedImagesArr.length} images selected`
-        )
-        )
-      })
-    </script>
+      )
+    )
+  })
+  var breadcrumbSelector = document.getElementById('breadcrumbSelector');
+  var breadcrumbInput = document.getElementById('breadcrumbInput');
+  breadcrumbSelector.addEventListener('updateInput', function() {
+    breadcrumbInput.value = breadcrumbSelector.breadcrumbsValue;
+  })
+  </script>
       <% } %>
  <%-include('../includes/footer.ejs') %>

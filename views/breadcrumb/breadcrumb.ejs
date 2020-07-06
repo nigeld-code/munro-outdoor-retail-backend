@@ -1,12 +1,13 @@
 <%- include('../includes/header.ejs') %>
-<script src="/js/breadcrumb.js" defer></script>
+<script src="/js/breadcrumbs.js" defer></script>
 </head>
 <body>
 <%- include('../includes/navigation.ejs') %>
 <h2>Breadcrumbs</h2>
 <form method="POST" action="/breadcrumbs">
-  <div id="parentSelector">
-  </div>
+  <breadcrumbs-selector id="breadcrumbSelector" withDefault></breadcrumbs-selector>
+  <input type="hidden" id="breadcrumbInput" name="finalParent" />
+  <br />
   <br />
   <div>
     <label for="title">Title: </label>
@@ -18,4 +19,11 @@
     <div style="color: red;"><%= errorMessage %></div>
   <% } %>
 </form>
+<script>
+  var breadcrumbSelector = document.getElementById('breadcrumbSelector');
+  var breadcrumbInput = document.getElementById('breadcrumbInput');
+  breadcrumbSelector.addEventListener('updateInput', function() {
+    breadcrumbInput.value = breadcrumbSelector.breadcrumbsValue;
+  })
+</script>
 <%-include('../includes/footer.ejs') %>
