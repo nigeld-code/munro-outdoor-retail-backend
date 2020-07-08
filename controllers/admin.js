@@ -86,6 +86,7 @@ exports.postAddProduct = (req, res, next) => {
         oldProductDescription: req.body.productDescription || '',
         oldProductPrice: req.body.productPrice || '',
         oldProductImages: req.body.productImages,
+        oldProductTags: req.body.productTags || '',
         oldProductIsLive: req.body.productIsLive || false
       }
     });
@@ -100,6 +101,10 @@ exports.postAddProduct = (req, res, next) => {
   if (productImages[0] === '') {
     productImages = null;
   }
+  let productTags = req.body.productTags.split(', ');
+  if (productTags[0] === '') {
+    productTags = null;
+  }
   let isLive = req.body.productIsLive;
   if (!isLive) isLive = false;
   const newProduct = new Product({
@@ -108,6 +113,7 @@ exports.postAddProduct = (req, res, next) => {
     productName,
     productDescription,
     breadcrumbs,
+    tags: productTags,
     productPrice,
     productImages: productImages,
     isLive
@@ -210,6 +216,7 @@ exports.postSendEditProduct = (req, res, next) => {
       breadcrumbs: req.body.breadcrumbs.split(','),
       productPrice: req.body.productPrice,
       productImages: req.body.productImages,
+      tags: req.body.productTags.split(', '),
       isLive: req.body.productIsLive
     };
     Product.findById(productId)
@@ -232,6 +239,7 @@ exports.postSendEditProduct = (req, res, next) => {
         } else {
           product.productImages = editedProduct.productImages.split(', ');
         }
+        product.tags = editedProduct.tags[0] !== '' ? editedProduct.tags : null;
         product.isLive = editedProduct.isLive;
         return product.save();
       })

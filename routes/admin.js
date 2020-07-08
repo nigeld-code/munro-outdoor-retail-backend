@@ -107,7 +107,8 @@ router.post(
             'One or more of the Image IDs cannot be found on DB'
           );
         }
-      })
+      }),
+    body('productTags').trim()
   ],
   adminController.postAddProduct
 );
@@ -212,7 +213,8 @@ router.post(
             'One or more of the Image IDs cannot be found on DB'
           );
         }
-      })
+      }),
+    body('productTags').trim()
   ],
   adminController.postSendEditProduct
 );

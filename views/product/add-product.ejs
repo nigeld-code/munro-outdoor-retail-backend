@@ -72,6 +72,17 @@
     <input type="hidden" id="productImages" name="productImages"/>
     <image-selector id="imageSelector" image-type="productImages" start-ids="<%= oldInput.oldProductImages %>"></image-selector>
   </div>
+  <div style="display: flex;">
+    <label for="productTags">Product Tags (', ' delimited):</label>
+    <textarea id="productTags" name="productTags"><%= oldInput.oldProductTags %></textarea>
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+          if (error.param === 'productTags') { %>
+            <div style="color: red;"><%= error.msg %></div>
+        <%  } 
+        } 
+    } %>
+  </div>
   <div>
     <label for="productIsLive">Product available on store:</label>
     <input

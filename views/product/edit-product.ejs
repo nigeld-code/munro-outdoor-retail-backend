@@ -115,6 +115,17 @@
     />
     <image-selector id="imageSelector" image-type="productImages" <% if (product.productImages) { %>start-ids="<%= product.productImages.join(', ') %>"<% } %>></image-selector>
   </div>
+  <div style="display: flex;">
+    <label for="productTags">Product Tags (', ' delimited):</label>
+    <textarea id="productTags" name="productTags"><%= product.tags.join(', ') %></textarea>
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+          if (error.param === 'productTags') { %>
+            <div style="color: red;"><%= error.msg %></div>
+        <%  } 
+        } 
+    } %>
+  </div>
   <div>
     <label for="productIsLive">Product available on store:</label>
     <% if (product.isLive) { %>

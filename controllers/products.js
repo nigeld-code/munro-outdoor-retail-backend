@@ -12,7 +12,7 @@ const checkGetParentBreadcrumb = async thisCategory => {
 
 exports.getProducts = async (req, res, next) => {
   const category = req.params.category;
-  const selection = req.params.selection;
+  const selection = req.params.selection || null;
   const findObj = { isLive: true };
   const breadcrumbsArr = [];
   let currentBreadcrumbId = category;
@@ -35,6 +35,11 @@ exports.getProducts = async (req, res, next) => {
     }
     findObj.breadcrumbs = {
       $in: [category]
+    };
+  }
+  if (selection && selection !== 'undefined') {
+    findObj.tags = {
+      $all: selection.split('&')
     };
   }
   Product.find(findObj)
