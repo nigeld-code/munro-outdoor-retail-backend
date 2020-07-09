@@ -85,6 +85,7 @@ exports.postAddProduct = (req, res, next) => {
         oldBreadcrumbs: req.body.breadcrumbs || '',
         oldProductDescription: req.body.productDescription || '',
         oldProductPrice: req.body.productPrice || '',
+        oldProductSizes: req.body.producSizes || '',
         oldProductImages: req.body.productImages,
         oldProductTags: req.body.productTags || '',
         oldProductIsLive: req.body.productIsLive || false
@@ -97,6 +98,10 @@ exports.postAddProduct = (req, res, next) => {
   const productDescription = req.body.productDescription;
   const breadcrumbs = req.body.breadcrumbs.split(',');
   const productPrice = +req.body.productPrice;
+  let productSizes = req.body.productSizes.split(', ');
+  if (productSizes[0] === '') {
+    productSizes = null;
+  }
   let productImages = req.body.productImages.split(', ');
   if (productImages[0] === '') {
     productImages = null;
@@ -115,6 +120,7 @@ exports.postAddProduct = (req, res, next) => {
     breadcrumbs,
     tags: productTags,
     productPrice,
+    productSizes,
     productImages: productImages,
     isLive
   });
@@ -215,6 +221,7 @@ exports.postSendEditProduct = (req, res, next) => {
       productDescription: req.body.productDescription,
       breadcrumbs: req.body.breadcrumbs.split(','),
       productPrice: req.body.productPrice,
+      productSizes: req.body.productSizes.split(', '),
       productImages: req.body.productImages,
       tags: req.body.productTags.split(', '),
       isLive: req.body.productIsLive
@@ -234,6 +241,10 @@ exports.postSendEditProduct = (req, res, next) => {
         product.productDescription = editedProduct.productDescription;
         product.breadcrumbs = editedProduct.breadcrumbs;
         product.productPrice = +editedProduct.productPrice;
+        product.productSizes =
+          editedProduct.productSizes[0] !== ''
+            ? editedProduct.productSizes
+            : null;
         if (editedProduct.productImages === '') {
           product.productImages = null;
         } else {

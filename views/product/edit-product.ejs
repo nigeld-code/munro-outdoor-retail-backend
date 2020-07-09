@@ -90,6 +90,24 @@
     <input type="hidden" id="breadcrumbInput" name="breadcrumbs" />
   </div>
   <div>
+    <label for="productSizes">Product Sizes (' ,' delimited):</label>
+    <input
+      type="text"
+      id="productSizes"
+      name="productSizes"
+      <% if (product.productSizes && product.productSizes.length) { %>
+      value="<%= product.productSizes.join(', ') %>"
+      <% } %>
+    />
+    <% if (errorMessage) {
+      for (var error of errorMessage) {
+        if (error.param === 'productSizes') { %>
+           <div style="color: red;"><%= error.msg %></div> 
+      <% } 
+      }
+    } %>
+  </div>
+  <div>
     <label for="productPrice">Product Price (£):</label>
     <input
       type="text"
