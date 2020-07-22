@@ -36,10 +36,12 @@ exports.login = (req, res, next) => {
         process.env.AUTH_JWT_SECRET,
         { expiresIn: authExpirationTimeout / 1000 }
       );
+      console.log(fetchedUser.savedAddress);
       res.status(200).json({
         token,
         expiresIn: authExpirationTimeout,
-        email: fetchedUser.email
+        email: fetchedUser.email,
+        savedAddress: fetchedUser.savedAddress
       });
     })
     .catch(err => {
@@ -63,7 +65,9 @@ exports.autoLogin = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
-      res.status(200).json(req.decodedToken);
+      res
+        .status(200)
+        .json({ ...req.decodedToken, savedAddress: user.savedAddress });
     })
     .catch(err => {
       if (!err.statusCode) {

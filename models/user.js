@@ -10,6 +10,32 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true
+    },
+    voucherCodes: [{ type: String, required: true }],
+    orders: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Order',
+        required: true
+      }
+    ],
+    savedAddress: {
+      name: {
+        type: String,
+        required: true
+      },
+      address: {
+        type: String,
+        required: true
+      },
+      city: {
+        type: String,
+        required: true
+      },
+      postcode: {
+        type: String,
+        required: true
+      }
     }
   },
   { timestamps: true }
