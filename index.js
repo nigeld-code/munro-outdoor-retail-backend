@@ -12,6 +12,7 @@ const productRoutes = require('./routes/product');
 const productsRoutes = require('./routes/products');
 const imagesRoutes = require('./routes/images');
 const voucherCodeRoutes = require('./routes/voucherCode');
+const orderRoutes = require('./routes/order');
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use('/product', productRoutes);
 app.use('/products', productsRoutes);
 app.use('/images', imagesRoutes);
 app.use('/voucher', voucherCodeRoutes);
+app.use('/order', orderRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;

@@ -9,17 +9,33 @@ const orderSchema = new Schema(
     },
     products: [
       {
-        productId: {
-          type: Schema.Types.ObjectId,
-          ref: 'Product',
+        productSku: {
+          type: String,
           required: true
         },
-        productQty: {
+        size: {
+          type: String
+        },
+        price: {
+          type: Number,
+          required: true
+        },
+        qty: {
           type: Number,
           required: true
         }
       }
     ],
+    totals: {
+      subTotal: {
+        type: Number,
+        required: true
+      },
+      totalToPay: {
+        type: Number,
+        required: true
+      }
+    },
     payment: [
       {
         method: {
