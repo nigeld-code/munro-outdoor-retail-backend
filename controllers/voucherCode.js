@@ -1,6 +1,6 @@
 const voucherCodes = require('../voucherCodes');
 
-exports.postCheckCode = (req, res, next) => {
+exports.postCheckCode = async (req, res, next) => {
   const voucherCode = req.body.code;
   const currentCodes = req.body.currentCodes;
   const basket = req.basket;
@@ -8,16 +8,14 @@ exports.postCheckCode = (req, res, next) => {
   const voucherCodeObj = voucherCodes.find(
     codeObj => codeObj.code === voucherCode
   );
+  const passCheck = await voucherCodeObj.check({
+    decodedToken: req.decodedToken,
+    currentCodes,
+    basket,
+    basketTotalPrice
+  });
   if (voucherCodeObj) {
-    if (
-      voucherCodeObj.check &&
-      !voucherCodeObj.check({
-        decodedToken: req.decodedToken,
-        currentCodes,
-        basket,
-        basketTotalPrice
-      })
-    ) {
+    if (!passCheck) {
       return res.status(200).json({
         acceptCode: false,
         message: {
@@ -36,7 +34,7 @@ exports.postCheckCode = (req, res, next) => {
       });
     }
   } else {
-    res.status(200).json({
+    return res.status(200).json({
       acceptCode: false,
       message: {
         isAccepted: false,
@@ -46,7 +44,7 @@ exports.postCheckCode = (req, res, next) => {
   }
 };
 
-exports.postAutoCheckCodes = (req, res, next) => {
+exports.postAutoCheckCodes = async (req, res, next) => {
   const currentCodes = req.body.currentCodes;
   const basket = req.basket;
   const basketTotalPrice = req.basketTotalPrice;
@@ -55,39 +53,37 @@ exports.postAutoCheckCodes = (req, res, next) => {
   const activeAutoDiscounts = [];
   const removeCodes = [];
   if (autoVoucherCodesArr.length && basket.length) {
-    autoVoucherCodesArr.forEach(autoCodeObj => {
-      if (
-        autoCodeObj.check({
-          decodedToken: req.decodedToken,
-          currentCodes,
-          basket,
-          basketTotalPrice
-        }) &&
-        !currentCodes.includes(autoCodeObj.code)
-      ) {
+    for (let autoCodeObj of autoVoucherCodesArr) {
+      const passCheck = await autoCodeObj.check({
+        decodedToken: req.decodedToken,
+        currentCodes,
+        basket,
+        basketTotalPrice
+      });
+      if (passCheck && !currentCodes.includes(autoCodeObj.code)) {
         activeAutoCodes.push(autoCodeObj.code);
         activeAutoDiscounts.push(autoCodeObj.discount);
       }
-    });
+    }
   }
   if (currentCodes.length && basket.length) {
-    currentCodes.forEach((code, index) => {
+    for (let index = 0; currentCodes.length > index; index++) {
       const voucherCodeObj = voucherCodes.find(
-        codeObj => codeObj.code === code
+        codeObj => codeObj.code === currentCodes[index]
       );
-      if (
-        voucherCodeObj &&
-        voucherCodeObj.check &&
-        !voucherCodeObj.check({
+      let failCheck;
+      if (voucherCodeObj.check) {
+        failCheck = await voucherCodeObj.check({
           decodedToken: req.decodedToken,
           currentCodes: [...currentCodes].filter((_, i) => i !== index),
           basket,
           basketTotalPrice
-        })
-      ) {
-        removeCodes.push(code);
+        });
       }
-    });
+      if (voucherCodeObj && !failCheck) {
+        removeCodes.push(currentCodes[index]);
+      }
+    }
   }
   return res.status(200).json({
     autoCodes: activeAutoCodes,

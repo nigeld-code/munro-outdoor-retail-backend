@@ -36,7 +36,6 @@ exports.login = (req, res, next) => {
         process.env.AUTH_JWT_SECRET,
         { expiresIn: authExpirationTimeout / 1000 }
       );
-      console.log(fetchedUser.savedAddress);
       res.status(200).json({
         token,
         expiresIn: authExpirationTimeout,

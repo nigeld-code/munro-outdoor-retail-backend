@@ -16,4 +16,6 @@ router.post(
   orderController.postSetupOrder
 );
 
+router.post('/placeOrder', orderController.postPlaceOrder);
+
 module.exports = router;

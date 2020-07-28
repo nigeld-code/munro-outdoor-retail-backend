@@ -1,3 +1,5 @@
+const User = require('./models/user');
+
 //  Voucher Codes:
 //  {
 //    code: ---Voucher Code--- (Must be all CAPS and no spaces, can include numbers)
@@ -28,11 +30,26 @@ const voucherCodes = [
       type: '£',
       value: -15
     },
-    check: ({ decodedToken, currentCodes, basket, basketTotalPrice }) =>
-      decodedToken &&
-      !currentCodes.includes('15OFF1STORDER') &&
-      basket.length &&
-      basketTotalPrice >= 50
+    check: async ({ decodedToken, currentCodes, basket, basketTotalPrice }) => {
+      try {
+        let user;
+        if (decodedToken) {
+          user = await User.findById(decodedToken.userId, 'voucherCodes');
+        } else {
+          return false;
+        }
+        return (
+          user &&
+          !user.voucherCodes.includes('15OFF1STORDER') &&
+          !currentCodes.includes('15OFF1STORDER') &&
+          basket.length &&
+          basketTotalPrice >= 50
+        );
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    }
   }
 ];
 
