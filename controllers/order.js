@@ -165,7 +165,7 @@ exports.postPlaceOrder = (req, res, next) => {
             ...product._doc,
             data: await Product.findOne(
               { productSku: product.productSku },
-              'productBrand productName productPrice'
+              'productBrand productName'
             )
           });
         }
@@ -181,12 +181,14 @@ exports.postPlaceOrder = (req, res, next) => {
               }" alt="" />
             </td>
               <td>
-                <p style="margin: 0;">${product.data.productName}${
+                <p style="margin: 0;">${product.data.productBrand} ${
+                product.data.productName
+              }${
                 product.size ? ' <small>- size: </small>' + product.size : ''
               }</p>
               <p style="margin: 0"><small>Sku: ${product.productSku}</small></p>
               </td>
-              <td>£${product.data.productPrice}<small> each</small></td>
+              <td>£${product.price}<small> each</small></td>
               <td>Qty: ${product.qty}</td>
               <td>£${product.price}</td>
             </tr>
@@ -195,11 +197,13 @@ exports.postPlaceOrder = (req, res, next) => {
             .join(''),
           string: productsData
             .map(
-              product => `${product.data.productName}${
-                product.size ? ' - size: ' + product.size : ''
-              } - Sku: ${product.productSku}, £${
-                product.data.productPrice
-              } each x Qty: ${product.qty} = £${product.price}
+              product => `${product.data.productBrand} ${
+                product.data.productName
+              }${product.size ? ' - size: ' + product.size : ''} - Sku: ${
+                product.productSku
+              }, £${product.price} each x Qty: ${product.qty} = £${
+                product.price
+              }
         `
             )
             .join('\n')
@@ -373,4 +377,19 @@ exports.postPlaceOrder = (req, res, next) => {
         next(err);
       });
   }
+};
+
+exports.getOrders = (req, res, next) => {
+  User.findById(req.decodedToken.userId, 'orders')
+    .populate('orders')
+    .then(result => {
+      return res.status(200).json({
+        orders: result.orders.reverse()
+      });
+    })
+    .catch(err => {
+      const error = new Error('Failed to User on DB');
+      error.statusCode = 401;
+      throw next(err);
+    });
 };

@@ -16,6 +16,8 @@ router.post(
   orderController.postSetupOrder
 );
 
+router.get('/getOrders', authCheckNonBlock, orderController.getOrders);
+
 router.post('/placeOrder', orderController.postPlaceOrder);
 
 module.exports = router;
