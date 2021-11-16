@@ -11,7 +11,7 @@
   "author": "Nigel Dundas",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.697.0",
+    "aws-sdk": "^2.814.0",
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^3.2.0",
     "dotenv": "^8.2.0",
